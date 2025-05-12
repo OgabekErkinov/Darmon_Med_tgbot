@@ -44,7 +44,19 @@ const sendPhoto = async (msg, users, bot) => {
   user.photo = photo.file_id;
   user.step = 'done';
 
-  const summary = `📝 <b>Resume:</b>\n\n👤 Ism: ${user.name}\n📍 Joylashuv: ${user.location}\n📅 Tug‘ilgan sana: ${user.dob}\n🏢 Ish joyi: ${user.job}\n🧠 Tajriba: ${user.experience} yil\n🎓 Ma’lumot: ${user.education}\n🌙 Kechki ish: ${user.workNight}\n📞 Tel: ${user.phone}`;
+const summary = `📝 <b>Resume:</b>\n
+👤 Ism: ${user.name}
+📍 Joylashuv: ${user.location}
+📅 Tug‘ilgan sana: ${user.dob}
+👨‍👩‍👧‍👦 Oilaviy ahvol: ${user.familyStatus}
+🎓 O‘qigan joyi: ${user.studyPlace}
+🏢 Ish joyi (hozirgi): ${user.job}
+🏭 Ilgari ishlagan joy: ${user.lastJobPlace}
+📚 Yo‘nalish: ${user.direction}
+🧠 Tajriba: ${user.experience} yil
+🎓 Ma’lumot: ${user.education}
+🌙 Kechki ish: ${user.workNight}
+📞 Tel: ${user.phone}`;
 
   const adminChatId = Number(process.env.ADMIN_CHAT_ID);
   await bot.sendPhoto(adminChatId, photo.file_id, {

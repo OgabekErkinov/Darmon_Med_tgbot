@@ -57,7 +57,50 @@ const fields = (user, msg, bot) => {
       break;
 
     case 'education':
-      user.education = msg.text;
+  user.education = msg.text;
+  user.step = 'familyStatus';
+  bot.sendMessage(chatId, "👨‍👩‍👧‍👦 Oilaviy ahvolingizni tanlang:", {
+    reply_markup: {
+      keyboard: [
+        ["👨‍💼 Uylangan / Turmushga chiqqan"],
+        ["🧑‍🎓 Uylanmagan / Turmushga chiqmagan"]
+      ],
+      resize_keyboard: true,
+      one_time_keyboard: true
+    }
+  });
+  break;
+
+    case 'familyStatus':
+      user.familyStatus = msg.text;
+      user.step = 'studyPlace';
+      bot.sendMessage(chatId, "🏫 Qayerda o‘qishni tugatgansiz?");
+      break;
+
+    case 'studyPlace':
+      user.studyPlace = msg.text;
+      user.step = 'lastJobPlace';
+      bot.sendMessage(chatId, "🏢 Oxirgi ish joyingiz qayerda bo‘lgan?");
+      break;
+
+    case 'lastJobPlace':
+      user.lastJobPlace = msg.text;
+      user.step = 'workDirection';
+      bot.sendMessage(chatId, "🧭 Qaysi yo‘nalishni tanlaysiz?", {
+        reply_markup: {
+          keyboard: [
+            ["🩺 Shifokor", "💰 Kassir"],
+            ["🧑‍⚕️ Hamshira", "🛡️ Oxrana"],
+            ["🧹 Orastabon", "👨‍🍳 Oshpaz"]
+          ],
+          resize_keyboard: true,
+          one_time_keyboard: true
+        }
+      });
+      break;
+
+    case 'workDirection':
+      user.direction = msg.text;
       user.step = 'workNight';
       bot.sendMessage(chatId, "🌙 Kechki payt ishlay olasizmi?", {
         reply_markup: {
@@ -85,6 +128,6 @@ const fields = (user, msg, bot) => {
       });
       break;
   }
-}
+};
 
 module.exports = { fields }
