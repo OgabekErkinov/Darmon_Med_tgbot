@@ -44,18 +44,16 @@ const sendPhoto = async (msg, users, bot) => {
   user.photo = photo.file_id;
   user.step = 'done';
 
-const summary = `📝 <b>Resume:</b>\n
+  const summary = `📝 <b>Resume:</b>\n
 👤 Ism: ${user.name}
-📍 Joylashuv: ${user.location}
 📅 Tug‘ilgan sana: ${user.dob}
-👨‍👩‍👧‍👦 Oilaviy ahvol: ${user.familyStatus}
-🎓 O‘qigan joyi: ${user.studyPlace}
-🏢 Ish joyi (hozirgi): ${user.job}
-🏭 Ilgari ishlagan joy: ${user.lastJobPlace}
-📚 Yo‘nalish: ${user.direction}
-🧠 Tajriba: ${user.experience} yil
-🎓 Ma’lumot: ${user.education}
-🌙 Kechki ish: ${user.workNight}
+📍 Joylashuv: ${user.location}
+👫 Oilaviy ahvoli: ${user.status}
+🎓 Qayerni tamomlagan: ${user.education}
+🏢 Qayerda ishlagan: ${user.job}
+🧠 Ish tajribasi : ${user.experience} yil
+🧭 Yo‘nalishi: ${user.direction}
+🌐 Tillar: ${user.languages}
 📞 Tel: ${user.phone}`;
 
   const adminChatId = Number(process.env.ADMIN_CHAT_ID);
@@ -78,7 +76,7 @@ const summary = `📝 <b>Resume:</b>\n
  
 }
 
-sendContact = async (msg, users, bot) => {
+const sendContact = async (msg, users, bot) => {
   const chatId = msg.chat.id;
   const user = users[chatId];
 
@@ -96,7 +94,7 @@ const callBackQuery = async (query, users, bot) => {
   if (!user) return;
 
   if (data === 'confirm' && user.step === 'done') {
-    bot.sendMessage(chatId, "✅ Ma'lumotlar tasdiqlandi. Rahmat!", getDefaultKeyboard());
+    bot.sendMessage(chatId, "✅ Ma'lumotlar tasdiqlandi. Tez orada siz bilan bog'lanamiz!", getDefaultKeyboard());
     delete users[chatId];
   }
 

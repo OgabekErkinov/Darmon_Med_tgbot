@@ -2,10 +2,9 @@ const getDefaultKeyboard = () => ({
   reply_markup: {
     keyboard: [[{ text: "🔄 Restart" }]],
     resize_keyboard: true,
-    one_time_keyboard: false
+    one_time_keyboard: true
   }
 });
-
 
 const getConfirmKeyboard = () => ({
   reply_markup: {
@@ -16,4 +15,9 @@ const getConfirmKeyboard = () => ({
   }
 });
 
-module.exports = { getDefaultKeyboard, getConfirmKeyboard };
+module.exports = {
+  getDefaultKeyboard,
+  getConfirmKeyboard
+};
+
+

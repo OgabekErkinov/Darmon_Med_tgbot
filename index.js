@@ -1,6 +1,5 @@
 const TelegramBot = require('node-telegram-bot-api');
 require('dotenv').config();
-const { getDefaultKeyboard } = require('./keyboards.js');
 const { askName, callBackQuery, sendPhoto, sendContact, sendMessage } = require('./handlers.js');
 
 const token = process.env.BOT_TOKEN
