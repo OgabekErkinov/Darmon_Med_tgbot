@@ -2,7 +2,7 @@ const getDefaultKeyboard = () => ({
   reply_markup: {
     keyboard: [[{ text: "🔄 Restart" }]],
     resize_keyboard: true,
-    one_time_keyboard: true
+    one_time_keyboard: false
   }
 });
 
