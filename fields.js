@@ -69,7 +69,8 @@ const fields = (user, msg, bot) => {
           keyboard: [
             ["👨‍⚕️ Shifokor", "💳 Kassir"],
             ["🧑‍⚕️ Hamshira", "🛡️ Oxrana"],
-            ["🧼 Orastabon", "👨‍🍳 Oshpaz"]
+            ["🧼 Orastabon", "👨‍🍳 Oshpaz"],
+            ["🏢 Qabul bo'limi", "📞 Call center"]
           ],
           resize_keyboard: true,
           one_time_keyboard: true
