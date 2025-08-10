@@ -23,8 +23,10 @@ const askName = async (msg, users, bot) => {
   const chatId = msg.chat.id;
   users[chatId] = { step: 'name' };
 
-  bot.sendMessage(chatId, "👋 Salom! Resume yaratish uchun quyidagi ma'lumotlarni kiriting:");
-  bot.sendMessage(chatId, "Ismingiz va familiyangizni kiriting:", getDefaultKeyboard());
+  if(msg.chat.id != Number(process.env.ADMIN_CHAT_ID)){
+      bot.sendMessage(chatId, "👋 Salom! Resume yaratish uchun quyidagi ma'lumotlarni kiriting:");
+      bot.sendMessage(chatId, "Ismingiz va familiyangizni kiriting:", getDefaultKeyboard());
+  }
 }
 
 const sendPhoto = async (msg, users, bot) => {
@@ -84,7 +86,11 @@ const sendContact = async (msg, users, bot) => {
 
   user.phone = msg.contact.phone_number;
   user.step = 'photo';
-  bot.sendMessage(chatId, "📷 Iltimos, rasmingizni yuboring (galereyadan):", getDefaultKeyboard());
+
+  if(msg?.chat?.id != Number(process.env.ADMIN_CHAT_ID)){
+      bot.sendMessage(chatId, "📷 Iltimos, rasmingizni yuboring (galereyadan):", getDefaultKeyboard());
+
+  }
 }
 
 const callBackQuery = async (query, users, bot) => {
