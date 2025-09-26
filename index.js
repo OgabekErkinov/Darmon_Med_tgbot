@@ -10,7 +10,11 @@ const {
 
 // Bot tokenini olish
 const token = process.env.BOT_TOKEN;
-const bot = new TelegramBot(token, { polling: true });
+const url = process.env.APP_URL;
+const bot = new TelegramBot(token, { webHook: true });
+
+// Railway webhook
+bot.setWebHook(`${url}/bot${token}`);
 
 const users = {};
 
@@ -30,6 +34,4 @@ bot.on('photo', (msg) => sendPhoto(msg, users, bot));
 bot.on('callback_query', (query) => callBackQuery(query, users, bot));
 
 // Xatoliklar
-bot.on('polling_error', (err) =>
-  console.error('Polling Error:', err.message)
-);
+bot.on('webhook_error', (err) => console.error('Webhook Error:', err.message));
