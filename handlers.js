@@ -1,117 +1,82 @@
-const { fields } = require('./fields');
-const { getDefaultKeyboard } = require('./keyboards')
+const { fields } = require("./fields");
+const { getDefaultKeyboard, getConfirmKeyboard } = require("./keyboards");
+const { createSummary } = require("./summary");
 
-const sendMessage = async (msg, users, bot) => {
+const adminChatId = parseInt(process.env.ADMIN_CHAT_ID);
+
+const sendMessage = (msg, users, bot) => {
   const chatId = msg.chat.id;
 
-  // Admin uchun restartni bloklash
   if (msg.text === "🔄 Restart") {
-    if (chatId === Number(process.env.ADMIN_CHAT_ID)) return;
-    users[chatId] = { step: 'name' };
+    if (chatId === adminChatId) return;
+    users[chatId] = { step: "name" };
     bot.sendMessage(chatId, "🔁 Qaytadan boshladik. Ismingiz va familiyangizni kiriting.", getDefaultKeyboard());
     return;
   }
 
-  // Buyruq / foydalanuvchi hali boshlamagan bo‘lsa
   if (!users[chatId] || msg.text?.startsWith("/")) return;
+  
   const user = users[chatId];
+  fields(user, msg, bot);
+};
 
-  fields(user, msg, bot)
-
-}
-const askName = async (msg, users, bot) => {
+const askName = (msg, users, bot) => {
   const chatId = msg.chat.id;
-  users[chatId] = { step: 'name' };
+  users[chatId] = { step: "name" };
 
-  if(msg.chat.id != Number(process.env.ADMIN_CHAT_ID)){
-      bot.sendMessage(chatId, "👋 Salom! Resume yaratish uchun quyidagi ma'lumotlarni kiriting:");
-      bot.sendMessage(chatId, "Ismingiz va familiyangizni kiriting:", getDefaultKeyboard());
+  if (chatId === adminChatId) {
+    bot.sendMessage(chatId, "👋 Salom! Resume yaratish uchun ma'lumotlarni kiriting:");
+    bot.sendMessage(chatId, "Ismingiz va familiyangizni kiriting:", getDefaultKeyboard());
   }
-}
+};
 
 const sendPhoto = async (msg, users, bot) => {
   const chatId = msg.chat.id;
   const user = users[chatId];
-  if (!user || user.step !== 'photo') return;
+  if (!user || user.step !== "done") return;
 
-  const photo = msg.photo[msg.photo.length - 1];
-  const file = await bot.getFile(photo.file_id);
-  const fileExtension = file.file_path.split('.').pop().toLowerCase();
+  const summary = createSummary(user);
+  const photoId = user.photo;
 
-  if (!['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
-    bot.sendMessage(chatId, "❌ Faqat JPG, PNG yoki GIF formatidagi rasm yuboring.");
-    return;
-  }
+  await bot.sendPhoto(chatId, photoId, { caption: summary, parse_mode: "HTML", ...getConfirmKeyboard() });
 
-  user.photo = photo.file_id;
-  user.step = 'done';
+  delete users[chatId];
+};
 
-  const summary = `📝 <b>Resume:</b>\n
-👤 Ism: ${user.name}
-📅 Tug‘ilgan sana: ${user.dob}
-📍 Joylashuv: ${user.location}
-👫 Oilaviy ahvoli: ${user.status}
-🎓 Qayerni tamomlagan: ${user.education}
-🏢 Qayerda ishlagan: ${user.job}
-🧠 Ish tajribasi : ${user.experience} yil
-🧭 Yo‘nalishi: ${user.direction}
-🌐 Tillar: ${user.languages}
-📞 Tel: ${user.phone}`;
-
-  const adminChatId = Number(process.env.ADMIN_CHAT_ID);
-  await bot.sendPhoto(adminChatId, photo.file_id, {
-    caption: summary,
-    parse_mode: "HTML"
-  });
-
-  await bot.sendPhoto(chatId, photo.file_id, {
-    caption: summary,
-    parse_mode: "HTML",
-    reply_markup: {
-      inline_keyboard: [
-        [
-          { text: "✅ Tasdiqlash", callback_data: "confirm" },
-          { text: "✏️ Tahrirlash", callback_data: "edit" }
-        ]
-      ]
-    }})
- 
-}
-
-const sendContact = async (msg, users, bot) => {
+const sendContact = (msg, users, bot) => {
   const chatId = msg.chat.id;
   const user = users[chatId];
+  if (!user || user.step !== "phone") return;
 
-  if (!user || user.step !== 'phone') return;
+  user.phone = msg.contact?.phone_number || user.phone;
+  user.step = "photo";
+  bot.sendMessage(chatId, "📷 Iltimos, rasmingizni yuboring:", getDefaultKeyboard());
+};
 
-  user.phone = msg.contact.phone_number;
-  user.step = 'photo';
-
-  if(msg?.chat?.id != Number(process.env.ADMIN_CHAT_ID)){
-      bot.sendMessage(chatId, "📷 Iltimos, rasmingizni yuboring (galereyadan):", getDefaultKeyboard());
-
-  }
-}
-
-const callBackQuery = async (query, users, bot) => {
+const callBackQuery = (query, users, bot) => {
   const chatId = query.message.chat.id;
-  const data = query.data;
   const user = users[chatId];
   if (!user) return;
 
-  if (data === 'confirm' && user.step === 'done') {
-    bot.sendMessage(chatId, "✅ Ma'lumotlar tasdiqlandi. Tez orada siz bilan bog'lanamiz!", getDefaultKeyboard());
-    delete users[chatId];
-  }
+  if (query.data === "confirm") {
+     const summary = createSummary(user);
+     const photoId = user.photo;
+     
+  // Adminga yuborish
+     bot.sendPhoto(adminChatId, photoId, { caption: summary, parse_mode: "HTML" });
+  // User xabar yuborish
+     bot.sendMessage(chatId, "✅ Ma'lumotlar tasdiqlandi. Tez orada siz bilan bog'lanamiz!", getDefaultKeyboard());
 
-  if (data === 'edit') {
-    users[chatId].step = 'name';
-    bot.sendMessage(chatId, "✏️ Tahrirlash boshlandi. Iltimos, ismingizni qaytadan kiriting.", getDefaultKeyboard());
+  // User objectni o‘chirish
+     delete users[chatId];
+}
+
+  if (query.data === "edit") {
+    users[chatId] = { step: "name" };
+    bot.sendMessage(chatId, "✏️ Tahrirlash boshlandi. Iltimos, ismingizni kiriting.", getDefaultKeyboard());
   }
 
   bot.answerCallbackQuery(query.id);
-}
+};
 
-
-
-module.exports = { sendMessage, askName, sendPhoto, sendContact, callBackQuery }
+module.exports = { sendMessage, askName, sendPhoto, sendContact, callBackQuery };
