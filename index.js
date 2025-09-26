@@ -1,5 +1,7 @@
+const express = require('express');
 const TelegramBot = require('node-telegram-bot-api');
 require('dotenv').config();
+
 const {
   askName,
   callBackQuery,
@@ -8,13 +10,24 @@ const {
   sendMessage,
 } = require('./handlers.js');
 
-// Bot tokenini olish
+// Bot tokeni va URL
 const token = process.env.BOT_TOKEN;
 const url = process.env.APP_URL;
-const bot = new TelegramBot(token, { webHook: true });
+const port = process.env.PORT || 3000;
 
-// Railway webhook
+// Botni webhook rejimida ishga tushiramiz
+const bot = new TelegramBot(token, { webHook: true });
 bot.setWebHook(`${url}/bot${token}`);
+
+// Express server
+const app = express();
+app.use(express.json());
+
+// Telegram webhook endpoint
+app.post(`/bot${token}`, (req, res) => {
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
 
 const users = {};
 
@@ -34,4 +47,11 @@ bot.on('photo', (msg) => sendPhoto(msg, users, bot));
 bot.on('callback_query', (query) => callBackQuery(query, users, bot));
 
 // Xatoliklar
-bot.on('webhook_error', (err) => console.error('Webhook Error:', err.message));
+bot.on('webhook_error', (err) =>
+  console.error('Webhook Error:', err.message)
+);
+
+// Serverni ishga tushirish
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
