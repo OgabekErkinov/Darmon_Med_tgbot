@@ -24,7 +24,7 @@ const askName = (msg, users, bot) => {
   const chatId = msg.chat.id;
   users[chatId] = { step: "name" };
 
-  if (chatId === adminChatId) {
+  if (chatId !== adminChatId) {
     bot.sendMessage(chatId, "👋 Salom! Resume yaratish uchun ma'lumotlarni kiriting:");
     bot.sendMessage(chatId, "Ismingiz va familiyangizni kiriting:", getDefaultKeyboard());
   }
