@@ -30,7 +30,9 @@ const getVacancyKeyboard = () => ({
 
 const getMaritalStatusKeyboard = () => ({
         reply_markup: {
-          keyboard: [["💑 Turmush qurgan / Uylangan", "🧍‍♂️ Turmush qurmagan / Uylanmagan"], ["Ajrashgan"]],
+          keyboard: [["💑 Turmush qurgan / Uylangan"],
+                      ["🧍‍♂️ Turmush qurmagan / Uylanmagan"],
+                      ["Ajrashgan"]],
           resize_keyboard: true,
           one_time_keyboard: true,
         },
