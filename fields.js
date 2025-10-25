@@ -1,5 +1,6 @@
 const moment = require("moment");
 const { getVacancyKeyboard, getDefaultKeyboard, getMaritalStatusKeyboard, getCallbackKeyboard } = require("./keyboards");
+const { createSummary } = require("./summary");
 
 const fields = (user, msg, bot) => {
   const chatId = msg.chat.id;
@@ -132,10 +133,19 @@ const fields = (user, msg, bot) => {
         bot.sendMessage(chatId, "❌ Iltimos, rasm yuboring (📷).");
         return;
       }
+
       user.photo = msg.photo[msg.photo.length - 1].file_id;
+      user.step = "done";
+
+        // ✅ Endi rasmni yuborish bilan birga tasdiqlash tugmalari chiqadi
+  bot.sendPhoto(chatId, user.photo, {
+    caption: createSummary(user),
+    message : "📷 Rasm qabul qilindi! Ma'lumotlaringizni tasdiqlash yoki tahrirlash:",
+    parse_mode: "HTML",
+    ...getCallbackKeyboard(),
+  });
 
   // Tasdiqlash / tahrirlash tugmalari bilan inline keyboard yuborish
-      bot.sendMessage(chatId, "📷 Rasm qabul qilindi! Ma'lumotlaringizni tasdiqlash yoki tahrirlash:", getCallbackKeyboard() );
   return;}
 };
 
