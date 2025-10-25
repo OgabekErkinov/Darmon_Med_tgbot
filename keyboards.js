@@ -38,7 +38,7 @@ const getMaritalStatusKeyboard = () => ({
         },
       })
 
-getCallbackKeyboard = () => ({
+const getCallbackKeyboard = () => ({
         reply_markup: {
           inline_keyboard: [
           [
