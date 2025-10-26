@@ -2,7 +2,7 @@ const { fields } = require("./fields");
 const { getDefaultKeyboard, getConfirmKeyboard } = require("./keyboards");
 const { createSummary } = require("./summary");
 
-const adminChatId = process.env.ADMIN_CHAT_ID;
+const adminChatId = Number(process.env.ADMIN_CHAT_ID);
 
 const sendMessage = (msg, users, bot) => {
   const chatId = msg.chat.id;
@@ -55,7 +55,7 @@ const sendContact = (msg, users, bot) => {
   bot.sendMessage(chatId, "📷 Iltimos, rasmingizni yuboring:", getDefaultKeyboard());
 };
 
-const callBackQuery = (query, users, bot) => {
+const callBackQuery = async (query, users, bot) => {
   const chatId = query.message.chat.id;
   const user = users[chatId];
   if (!user) return;
