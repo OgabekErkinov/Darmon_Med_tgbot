@@ -38,21 +38,9 @@ const getMaritalStatusKeyboard = () => ({
         },
       })
 
-const getCallbackKeyboard = () => ({
-        reply_markup: {
-          inline_keyboard: [
-          [
-            { text: "✅ Tasdiqlash", callback_data: "confirm" },
-            { text: "✏️ Tahrirlash", callback_data: "edit" },
-          ],
-        ],
-    },
-  })
-
 module.exports = {
   getDefaultKeyboard,
   getConfirmKeyboard,
   getVacancyKeyboard,
-  getMaritalStatusKeyboard,
-  getCallbackKeyboard
+  getMaritalStatusKeyboard
 };

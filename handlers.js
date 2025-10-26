@@ -33,14 +33,23 @@ const askName = (msg, users, bot) => {
 const sendPhoto = async (msg, users, bot) => {
   const chatId = msg.chat.id;
   const user = users[chatId];
-  if (!user || user.step !== "done") return;
+  if (!user || user.step !== "photo") return;
+
+  user.photo = msg.photo[msg.photo.length - 1].file_id;
+  user.step = "done";
 
   const summary = createSummary(user);
   const photoId = user.photo;
 
-  await bot.sendPhoto(chatId, photoId, { caption: summary, parse_mode: "HTML", ...getConfirmKeyboard() });
+  await bot.sendPhoto(chatId, photoId, { caption: summary, parse_mode: "HTML", reply_markup: {
+      inline_keyboard: [
+        [
+          { text: "✅ Tasdiqlash", callback_data: "confirm" },
+          { text: "✏️ Tahrirlash", callback_data: "edit" },
+        ],
+      ],
+    }, });
 
-  delete users[chatId];
 };
 
 const sendContact = (msg, users, bot) => {

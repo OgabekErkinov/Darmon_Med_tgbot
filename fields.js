@@ -1,5 +1,5 @@
 const moment = require("moment");
-const { getVacancyKeyboard, getDefaultKeyboard, getMaritalStatusKeyboard, getCallbackKeyboard } = require("./keyboards");
+const { getVacancyKeyboard, getDefaultKeyboard, getMaritalStatusKeyboard, getCallbackKeyboard, getConfirmKeyboard } = require("./keyboards");
 const { createSummary } = require("./summary");
 
 const fields = (user, msg, bot) => {
@@ -129,23 +129,20 @@ const fields = (user, msg, bot) => {
       return;
 
     case "photo":
-      if (!msg.photo || msg.photo.length === 0) {
-        bot.sendMessage(chatId, "❌ Iltimos, rasm yuboring (📷).");
-        return;
-      }
+  if (!msg.photo || msg.photo.length === 0) {
+    bot.sendMessage(chatId, "❌ Iltimos, rasm yuboring (📷).");
+    return;
+  }
 
-      user.photo = msg.photo[msg.photo.length - 1].file_id;
-      user.step = "done";
+  user.photo = msg.photo[msg.photo.length - 1].file_id;
+  user.step = "done";
 
-        // ✅ Endi rasmni yuborish bilan birga tasdiqlash tugmalari chiqadi
+  // ✅ Rasm va inline tugmalar bilan yuborish
   bot.sendPhoto(chatId, user.photo, {
-    caption: createSummary(user),
-    message : "📷 Rasm qabul qilindi! Ma'lumotlaringizni tasdiqlash yoki tahrirlash:",
+    caption: "📷 Rasm qabul qilindi!\n\n" + createSummary(user),
     parse_mode: "HTML",
-    ...getCallbackKeyboard(),
+    reply_markup: getConfirmKeyboard().reply_markup, // inline keyboard
   });
-
-  // Tasdiqlash / tahrirlash tugmalari bilan inline keyboard yuborish
   return;}
 };
 
