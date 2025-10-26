@@ -2,7 +2,7 @@ const { fields } = require("./fields");
 const { getDefaultKeyboard, getConfirmKeyboard } = require("./keyboards");
 const { createSummary } = require("./summary");
 
-const adminChatId = parseInt(process.env.ADMIN_CHAT_ID);
+const adminChatId = process.env.ADMIN_CHAT_ID;
 
 const sendMessage = (msg, users, bot) => {
   const chatId = msg.chat.id;
@@ -41,14 +41,7 @@ const sendPhoto = async (msg, users, bot) => {
   const summary = createSummary(user);
   const photoId = user.photo;
 
-  await bot.sendPhoto(chatId, photoId, { caption: summary, parse_mode: "HTML", reply_markup: {
-      inline_keyboard: [
-        [
-          { text: "✅ Tasdiqlash", callback_data: "confirm" },
-          { text: "✏️ Tahrirlash", callback_data: "edit" },
-        ],
-      ],
-    }, });
+  await bot.sendPhoto(chatId, photoId, { caption: summary, parse_mode: "HTML", reply_markup: getConfirmKeyboard().reply_markup });
 
 };
 
