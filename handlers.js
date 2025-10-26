@@ -65,9 +65,9 @@ const callBackQuery = async (query, users, bot) => {
      const photoId = user.photo;
      
   // Adminga yuborish
-     bot.sendPhoto(adminChatId, photoId, { caption: summary, parse_mode: "HTML" });
+     await bot.sendPhoto(adminChatId, photoId, { caption: summary, parse_mode: "HTML" });
   // User xabar yuborish
-     bot.sendMessage(chatId, "✅ Ma'lumotlar tasdiqlandi. Tez orada siz bilan bog'lanamiz!", getDefaultKeyboard());
+     await bot.sendMessage(chatId, "✅ Ma'lumotlar tasdiqlandi. Tez orada siz bilan bog'lanamiz!", getDefaultKeyboard());
 
   // User objectni o‘chirish
      delete users[chatId];
@@ -75,7 +75,7 @@ const callBackQuery = async (query, users, bot) => {
 
   if (query.data === "edit") {
     users[chatId] = { step: "name" };
-    bot.sendMessage(chatId, "✏️ Tahrirlash boshlandi. Iltimos, ismingizni kiriting.", getDefaultKeyboard());
+    await bot.sendMessage(chatId, "✏️ Tahrirlash boshlandi. Iltimos, ismingizni kiriting.", getDefaultKeyboard());
   }
 
   bot.answerCallbackQuery(query.id);
