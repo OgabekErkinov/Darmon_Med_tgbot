@@ -13,7 +13,7 @@ const {
 // Bot tokeni va URL
 const token = process.env.BOT_TOKEN;
 const url = process.env.APP_URL;
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 // Botni webhook rejimida ishga tushiramiz
 const bot = new TelegramBot(token, { webHook: true });
