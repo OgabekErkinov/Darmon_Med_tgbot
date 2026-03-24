@@ -47,7 +47,7 @@ bot.on('photo', (msg) => sendPhoto(msg, users, bot));
 bot.on('callback_query', (query) => callBackQuery(query, users, bot));
 
 // Xatoliklar
-bot.on('webhook_error', '0.0.0.0', (err) =>
+bot.on('webhook_error', (err) =>
   console.error('Webhook Error:', err.message)
 );
 
